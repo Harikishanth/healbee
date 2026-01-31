@@ -1,5 +1,5 @@
 [project]
-name = "healhub"
+name = "healbee"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -12,4 +12,11 @@ dependencies = [
     "soundfile>=0.13.1",
     "streamlit>=1.45.1",
     "wave>=0.0.2",
+    "markdown>=3.5.0",
+    "supabase>=2.0.0",
+    "streamlit-mic-recorder>=0.0.1",
+    "numpy>=1.24.0",
+    "fuzzywuzzy>=0.18.0",
+    "textdistance>=4.0.0",
+    "pydub>=0.25.0",
 ]
