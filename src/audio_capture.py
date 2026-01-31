@@ -1,4 +1,8 @@
-import sounddevice as sd
+try:
+    import sounddevice as sd
+except Exception:
+    sd = None  # PortAudio not available (e.g. Streamlit Cloud); voice still works via browser mic + AudioCleaner
+
 import numpy as np
 import queue
 import threading
@@ -119,6 +123,15 @@ class AudioCleaner:
 
 class CleanAudioCapture:
     def __init__(self, sample_rate=48000, channels=1, dtype=np.int16):
+        if sd is None:
+            self.sample_rate = sample_rate
+            self.channels = channels
+            self.dtype = dtype
+            self.audio_queue = queue.Queue()
+            self.is_recording = False
+            self.cleaner = AudioCleaner()
+            self.stream = None
+            return
         print("Initializing CleanAudioCapture with parameters:")
         print(f"- Sample rate: {sample_rate}")
         print(f"- Channels: {channels}")
@@ -190,6 +203,9 @@ class CleanAudioCapture:
     
     def start_recording(self):
         """Start real-time audio capture with voice activity detection"""
+        if sd is None:
+            self.is_recording = False
+            return
         print("\nStarting audio recording...")
         self.is_recording = True
         self.voice_detected = False
@@ -229,9 +245,10 @@ class CleanAudioCapture:
     
     def stop_recording(self):
         """Stop audio capture"""
-        if hasattr(self, 'stream'):
+        if hasattr(self, 'stream') and self.stream is not None:
             self.stream.stop()
             self.stream.close()
+            self.stream = None
         self.is_recording = False
         print("🛑 Recording stopped.")
         
