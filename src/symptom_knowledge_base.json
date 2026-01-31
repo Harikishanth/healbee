@@ -1201,6 +1201,90 @@
                 "Blisters with pain, redness, or fever are a red flag.",
                 "Large or spreading blisters need evaluation."
             ]
+    },
+    {
+      "symptom_name": "menstrual pain",
+      "keywords": ["period pain", "cramps", "dysmenorrhea", "menstrual cramps", "monthly pain"],
+      "follow_up_questions": [
+        "How severe is the pain? Is it affecting your daily activities?",
+        "How long does it usually last each cycle?",
+        "Do you have heavy bleeding, irregular cycles, or other symptoms?"
+      ],
+      "basic_triage_points": [
+        "Severe menstrual pain that does not improve with rest or over-the-counter pain relief should be discussed with a doctor.",
+        "Heavy bleeding, fainting, or pain with fever needs medical evaluation.",
+        "This is general guidance only; not a diagnosis. Consult a healthcare provider for personal advice."
+      ]
+    },
+    {
+      "symptom_name": "child fever",
+      "keywords": ["baby fever", "child temperature", "infant fever", "bachhe ko bukhaar"],
+      "follow_up_questions": [
+        "How old is the child? What is the temperature, if measured?",
+        "How long has the fever been present?",
+        "Is the child drinking fluids? Any rash, difficulty breathing, or unusual drowsiness?"
+      ],
+      "basic_triage_points": [
+        "Fever in an infant under 3 months needs immediate medical attention.",
+        "High fever (above 103°F / 39.4°C) in a child, or fever with rash, stiff neck, or difficulty breathing, requires prompt medical evaluation.",
+        "Fever lasting more than 3 days in a child should be checked by a doctor."
+      ]
+    },
+    {
+      "symptom_name": "weakness",
+      "keywords": ["weak", "fatigue", "low energy", "kamzor", "anemia", "anaemia", "pale", "pallor"],
+      "follow_up_questions": [
+        "How long have you felt weak? Is it constant or comes and goes?",
+        "Do you have pale skin, dizziness, shortness of breath on mild effort, or heavy menstrual bleeding?",
+        "Have you had any change in diet, blood loss, or known nutritional deficiencies?"
+      ],
+      "basic_triage_points": [
+        "Sudden or severe weakness, especially with chest pain or difficulty breathing, needs prompt medical attention.",
+        "Persistent weakness with paleness, dizziness, or breathlessness may need evaluation for anemia or other causes; see a doctor.",
+        "Nutrition and iron-rich foods can help in some cases, but a healthcare provider should guide diagnosis and treatment."
+      ]
+    },
+    {
+      "symptom_name": "high blood sugar",
+      "keywords": ["blood sugar", "glucose high", "diabetes", "madhumeh", "sugar level", "hyperglycemia"],
+      "follow_up_questions": [
+        "Have you been diagnosed with diabetes? What was your last blood sugar reading, if you know?",
+        "Do you have increased thirst, frequent urination, blurry vision, or unexplained weight loss?",
+        "Are you on any medication for diabetes?"
+      ],
+      "basic_triage_points": [
+        "Very high blood sugar with confusion, severe drowsiness, or difficulty breathing is an emergency; seek care immediately.",
+        "Consistently high blood sugar should be managed with your doctor; do not change medication without medical advice.",
+        "This is guidance only; not a diagnosis. Consult your doctor for diabetes management."
+      ]
+    },
+    {
+      "symptom_name": "high blood pressure",
+      "keywords": ["blood pressure", "BP high", "hypertension", "uccha raktachap", "pressure"],
+      "follow_up_questions": [
+        "Have you been diagnosed with high blood pressure? What readings have you had recently, if you know?",
+        "Do you have severe headache, chest pain, shortness of breath, or vision changes?",
+        "Are you on any medication for blood pressure?"
+      ],
+      "basic_triage_points": [
+        "Severe headache with very high blood pressure, or chest pain/shortness of breath, needs immediate medical attention.",
+        "Consistently high blood pressure should be managed with your doctor; do not stop or change medication without medical advice.",
+        "This is guidance only; not a diagnosis. Consult your doctor for BP management."
+      ]
+    },
+    {
+      "symptom_name": "heat stroke",
+      "keywords": ["heat exhaustion", "heat stroke", "loo", "garmi", "overheating", "sun stroke"],
+      "follow_up_questions": [
+        "Have you been in the sun or heat for a long time? Are you able to sweat?",
+        "Do you have a high fever, confusion, severe headache, or loss of consciousness?",
+        "Are you drinking enough fluids?"
+      ],
+      "basic_triage_points": [
+        "Confusion, very high body temperature, or loss of consciousness in hot weather is a medical emergency; cool the person and seek help immediately.",
+        "Heavy sweating that stops with dizziness or weakness can be heat exhaustion; move to shade, rehydrate, and seek care if it does not improve.",
+        "In hot weather, drink plenty of fluids and avoid prolonged exposure; see a doctor if symptoms are severe."
+      ]
     }
   ]
 }

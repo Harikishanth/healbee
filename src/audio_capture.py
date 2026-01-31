@@ -10,11 +10,11 @@ import requests
 import io
 
 try:
-    from src.utils import HealHubUtilities
+    from src.utils import HealBeeUtilities
 except ImportError:
     import sys
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-    from src.utils import HealHubUtilities
+    from src.utils import HealBeeUtilities
 
 class AudioCleaner:
     """
@@ -296,7 +296,7 @@ def main():
     
     # Initialize components
     audio_capture = CleanAudioCapture(sample_rate=48000)
-    util = HealHubUtilities()
+    util = HealBeeUtilities()
     
     try:
         # Start recording

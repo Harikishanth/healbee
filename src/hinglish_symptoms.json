@@ -130,5 +130,11 @@
   "heart failure": ["हृदय विफलता", "heart failure", "HF", "inability of the heart to pump effectively"],
   "chronic infectious diseases": ["दीर्घकालिक संक्रामक रोग", "chronic infectious diseases", "CID", "long-term infections"],
   "HIV/AIDS": ["एचआईवी/एड्स", "HIV/AIDS", "human immunodeficiency virus", "acquired immunodeficiency syndrome"],
-  "burning sensation": ["jalan", "pet mein jalan"]
+  "burning sensation": ["jalan", "pet mein jalan"],
+  "menstrual pain": ["period pain", "cramps", "mahwari dard", "menstrual cramps", "monthly pain"],
+  "child fever": ["baby fever", "bachhe ko bukhaar", "child temperature", "infant fever"],
+  "weakness": ["kamzor", "weak", "anemia", "anaemia", "thakan", "low energy"],
+  "high blood sugar": ["blood sugar high", "diabetes", "madhumeh", "sugar high", "glucose high"],
+  "high blood pressure": ["blood pressure high", "BP high", "uccha raktachap", "hypertension"],
+  "heat stroke": ["loo", "garmi", "heat exhaustion", "sun stroke", "overheating"]
 }

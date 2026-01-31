@@ -34,14 +34,14 @@ def compute_relevance_score(response_text: str, key_points: List[str]) -> float:
 
 from src.nlu_processor import SarvamMNLUProcessor, NLUResult, HealthIntent, MedicalEntity
 from src.symptom_checker import SymptomChecker
-from src.response_generator import HealHubResponseGenerator
+from src.response_generator import HealBeeResponseGenerator
 
-class HealHubEvaluator:
-    """Comprehensive evaluation framework for HealHub components"""
+class HealBeeEvaluator:
+    """Comprehensive evaluation framework for HealBee components"""
     def __init__(self, api_key: str):
         self.api_key = api_key
         self.nlu_processor = SarvamMNLUProcessor(api_key=api_key)
-        self.response_generator = HealHubResponseGenerator(api_key=api_key)
+        self.response_generator = HealBeeResponseGenerator(api_key=api_key)
         # Initialize evaluation metrics
         self.metrics = {
             'nlu': {
@@ -434,7 +434,7 @@ class HealHubEvaluator:
 
         # Create report
         report = []
-        report.append("HealHub Evaluation Report")
+        report.append("HealBee Evaluation Report")
         report.append("=" * 50)
         report.append(f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         report.append("\n")
@@ -494,12 +494,12 @@ class HealHubEvaluator:
         with open(metrics_file, 'w', encoding='utf-8') as f:
             json.dump(self.metrics, f, indent=2)
 
-class TestHealHubEvaluator(unittest.TestCase):
-    """Test cases for the HealHubEvaluator class"""
+class TestHealBeeEvaluator(unittest.TestCase):
+    """Test cases for the HealBeeEvaluator class"""
 
     def setUp(self):
         self.api_key = os.getenv("SARVAM_API_KEY", "test_api_key")
-        self.evaluator = HealHubEvaluator(self.api_key)
+        self.evaluator = HealBeeEvaluator(self.api_key)
 
         original_generate = SymptomChecker.generate_preliminary_assessment
         def patched_generate(self_):
@@ -614,7 +614,7 @@ class TestHealHubEvaluator(unittest.TestCase):
 
         # Test report generation
         report = self.evaluator.generate_evaluation_report()
-        self.assertIn("HealHub Evaluation Report", report)
+        self.assertIn("HealBee Evaluation Report", report)
         self.assertIn("NLU Component Metrics", report)
 
         # Test saving results
@@ -628,12 +628,12 @@ if __name__ == '__main__':
         import streamlit as st
         import pandas as pd
 
-        st.set_page_config(page_title="📊 HealHub Evaluation Dashboard", layout="wide")
-        st.title("📈 HealHub Response Generator Evaluation")
+        st.set_page_config(page_title="📊 HealBee Evaluation Dashboard", layout="wide")
+        st.title("📈 HealBee Response Generator Evaluation")
         st.markdown("Track fuzzy relevance, safety, and disclaimer coverage for generated responses.")
 
         api_key = os.getenv("SARVAM_API_KEY", "dummy_key")
-        evaluator = HealHubEvaluator(api_key=api_key)
+        evaluator = HealBeeEvaluator(api_key=api_key)
         metrics = evaluator.evaluate_response_generator()
 
         st.subheader("📊 Metrics Summary")

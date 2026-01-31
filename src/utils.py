@@ -9,8 +9,8 @@ from pydub import AudioSegment
 import io
 import soundfile as sf
 
-class HealHubUtilities:
-    """Core utilities for HealHub healthcare application"""
+class HealBeeUtilities:
+    """Core utilities for HealBee healthcare application"""
     
     def __init__(self, api_key: str):
         self.api_key = api_key

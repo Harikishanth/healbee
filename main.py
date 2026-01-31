@@ -36,13 +36,13 @@ except ImportError:
 
 
 from src.nlu_processor import SarvamMNLUProcessor, NLUResult, HealthIntent
-from src.response_generator import HealHubResponseGenerator
+from src.response_generator import HealBeeResponseGenerator
 from src.symptom_checker import SymptomChecker
 import json
 
-def run_healhub_voice_app():
+def run_healbee_voice_app():
     """
-    Main function to run the HealHub Voice Application.
+    Main function to run the HealBee Voice Application.
     """
     load_dotenv()
     api_key = os.getenv("SARVAM_API_KEY")
@@ -52,14 +52,14 @@ def run_healhub_voice_app():
         print("   You can get your API key from: https://dashboard.sarvam.ai")
         return
 
-    print("🚀 Initializing HealHub Voice Application...")
+    print("🚀 Initializing HealBee Voice Application...")
     
     # Initialize components
     # For actual use, ensure CleanAudioCapture and SarvamSTTIntegration are correctly implemented
     audio_capturer = CleanAudioCapture(sample_rate=16000)
     stt_service = SarvamSTTIntegration() # Replace with actual STT client if available
     nlu_processor = SarvamMNLUProcessor(api_key=api_key)
-    response_gen = HealHubResponseGenerator(api_key=api_key)
+    response_gen = HealBeeResponseGenerator(api_key=api_key)
 
     try:
         print("\n🎤 Speak your health query now (simulated audio capture)...")
@@ -121,7 +121,7 @@ def run_healhub_voice_app():
                 user_answer = ""
                 # Basic validation: ensure answer is not empty
                 while not user_answer.strip():
-                    prompt_message = f"🎤 HealHub (follow-up for {symptom_name_for_prompt}): {question_text_for_prompt}\nYour answer: "
+                    prompt_message = f"🎤 HealBee (follow-up for {symptom_name_for_prompt}): {question_text_for_prompt}\nYour answer: "
                     user_answer = input(prompt_message)
                     if not user_answer.strip():
                         print("An answer is required to proceed.")
@@ -138,7 +138,7 @@ def run_healhub_voice_app():
 
             final_response_str = json.dumps(assessment_result, indent=2, ensure_ascii=False)
 
-            print("\n\n💡 HealHub Assistant Says (Symptom Assessment):")
+            print("\n\n💡 HealBee Assistant Says (Symptom Assessment):")
             print("--------------------------------------------------")
             print(final_response_str)
             print("--------------------------------------------------")
@@ -152,11 +152,11 @@ def run_healhub_voice_app():
 
         else:
             # Original flow for non-symptom queries or emergencies
-            print("\n💬 Generating response using HealHubResponseGenerator...")
+            print("\n💬 Generating response using HealBeeResponseGenerator...")
             # response_gen is initialized from earlier in the function
             final_response_str = response_gen.generate_response(transcribed_text, nlu_output)
 
-            print("\n\n💡 HealHub Assistant Says:")
+            print("\n\n💡 HealBee Assistant Says:")
             print("--------------------------------------------------")
             print(final_response_str)
             print("--------------------------------------------------")
@@ -177,4 +177,4 @@ if __name__ == "__main__":
             f.write("SARVAM_API_KEY=your_sarvam_api_key_here\n")
         print("📝 Created .env file. Please add your SARVAM_API_KEY.")
     
-    run_healhub_voice_app()
+    run_healbee_voice_app()

@@ -15,7 +15,10 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-with open("src/hinglish_symptoms.json", "r", encoding="utf-8") as f:
+# Resolve paths relative to project root (HealHub) so they work regardless of CWD
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+with open(os.path.join(_PROJECT_ROOT, "src", "hinglish_symptoms.json"), "r", encoding="utf-8") as f:
     HINGLISH_SYMPTOMS = json.load(f)
 
 import re
@@ -31,8 +34,10 @@ def tokenize_hinglish_query(text: str) -> List[str]:
     """Break down Hinglish sentence into individual tokens."""
     return re.findall(r'\b[\w]+\b', text.lower())
 
-def load_common_misspellings(filepath="src/common_misspellings.json"):
+def load_common_misspellings(filepath=None):
     import json
+    if filepath is None:
+        filepath = os.path.join(_PROJECT_ROOT, "src", "common_misspellings.json")
     try:
         with open(filepath, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -173,8 +178,10 @@ class SarvamMNLUProcessor:
         ]
         self._load_symptom_kb() # Load symptom knowledge base
 
-    def _load_keyword_config(self, config_filepath="src/nlu_config.json"):
+    def _load_keyword_config(self, config_filepath=None):
         """Loads keyword configurations from a JSON file."""
+        if config_filepath is None:
+            config_filepath = os.path.join(_PROJECT_ROOT, "src", "nlu_config.json")
         try:
             with open(config_filepath, 'r', encoding='utf-8') as f:
                 config_data = json.load(f)
@@ -195,8 +202,10 @@ class SarvamMNLUProcessor:
             print(f"❌ An unexpected error occurred while loading keyword config from {config_filepath}: {e}")
             self.emergency_keywords = {}
 
-    def _load_symptom_kb(self, filepath="src/symptom_knowledge_base.json"):
+    def _load_symptom_kb(self, filepath=None):
         """Loads the symptom knowledge base from a JSON file."""
+        if filepath is None:
+            filepath = os.path.join(_PROJECT_ROOT, "src", "symptom_knowledge_base.json")
         try:
             with open(filepath, 'r', encoding='utf-8') as f:
                 data = json.load(f)
@@ -403,6 +412,12 @@ Respond ONLY with JSON format:
 
             if response and "choices" in response:
                 content = response["choices"][0]["message"]["content"]
+                content = content.strip()
+                if '```json' in content:
+                    content = content.split('```json')[1].split('```')[0].strip()
+                elif '```' in content:
+                    content = content.split('```')[1].strip()
+                result = json.loads(content)
                 entity_list = result.get("entities", [])
 
                 for entity_data in entity_list:

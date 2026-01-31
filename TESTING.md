@@ -1,6 +1,6 @@
 ## Test Evaluation Framework
 
-The project includes a comprehensive test evaluation framework to assess the performance and accuracy of the HealHub application. This framework is designed to evaluate all major components systematically and provide detailed metrics for continuous improvement.
+The project includes a comprehensive test evaluation framework to assess the performance and accuracy of the HealBee application. This framework is designed to evaluate all major components systematically and provide detailed metrics for continuous improvement.
 
 ### Framework Components
 
@@ -62,8 +62,8 @@ The project includes a comprehensive test evaluation framework to assess the per
 
    # Generate evaluation report
    python -c "
-   from tests.test_evaluation import HealHubEvaluator
-   evaluator = HealHubEvaluator(api_key='your_api_key_here')
+   from tests.test_evaluation import HealBeeEvaluator
+   evaluator = HealBeeEvaluator(api_key='your_api_key_here')
    evaluator.save_evaluation_results('evaluation_results.txt')
    "
    ```

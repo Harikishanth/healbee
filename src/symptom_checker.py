@@ -5,13 +5,15 @@ import os
 from typing import List, Dict, Optional, Any
 from enum import Enum # Required for HealthIntent placeholder
 
+# Resolve paths relative to project root (HealHub) so they work regardless of CWD
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 try:
-    from src.utils import HealHubUtilities
+    from src.utils import HealBeeUtilities
 except ImportError:
     import sys
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-    from src.utils import HealHubUtilities
+    from src.utils import HealBeeUtilities
 
 # Attempt to import NLUResult from the existing nlu_processor.
 # If running this subtask in isolation and that file isn't in the same root,
@@ -72,13 +74,15 @@ class SymptomChecker:
         "disclaimer": "This information is for general guidance only and is not a medical diagnosis. Please consult a qualified healthcare professional for any health concerns or before making any decisions related to your health."
     }
 
-    def __init__(self, nlu_result: NLUResult, api_key: Optional[str] = None, symptom_kb_path="src/symptom_knowledge_base.json"):
+    def __init__(self, nlu_result: NLUResult, api_key: Optional[str] = None, symptom_kb_path=None):
         self.nlu_result = nlu_result
         self.sarvam_client = SarvamAPIClient(api_key=api_key)
-        self.utils = HealHubUtilities(api_key=api_key)
+        self.utils = HealBeeUtilities(api_key=api_key)
         self.symptom_kb: Optional[Dict[str, Dict]] = None # Stores symptom_name.lower() -> symptom_data
         self.collected_symptom_details: Dict[str, Dict[str, str]] = {} # symptom_name.lower() -> {question: answer}
         self.pending_follow_up_questions: List[Dict[str, str]] = [] # List of {"symptom_name": str, "question": str}
+        if symptom_kb_path is None:
+            symptom_kb_path = os.path.join(_PROJECT_ROOT, "src", "symptom_knowledge_base.json")
         self._load_symptom_kb(symptom_kb_path)
 
     def _load_symptom_kb(self, filepath: str):
@@ -314,7 +318,7 @@ if __name__ == '__main__':
 
     # Create dummy symptom_knowledge_base.json for testing if not present
     # In a real scenario, this file must exist.
-    dummy_kb_path = "src/symptom_knowledge_base.json" # Renamed for clarity
+    dummy_kb_path = os.path.join(_PROJECT_ROOT, "src", "symptom_knowledge_base.json")
     try:
         with open(dummy_kb_path, "r", encoding='utf-8') as f:
             pass # File exists
@@ -342,9 +346,9 @@ if __name__ == '__main__':
                 }
             ]
         }
-        # import os # Already imported at the top
-        if not os.path.exists("src"):
-            os.makedirs("src")
+        src_dir = os.path.join(_PROJECT_ROOT, "src")
+        if not os.path.exists(src_dir):
+            os.makedirs(src_dir)
             print("Created directory src/")
         with open(dummy_kb_path, "w", encoding='utf-8') as f:
             json.dump(dummy_kb_content, f, indent=2)
@@ -386,7 +390,7 @@ if __name__ == '__main__':
 
         print("\n🔬 Attempting to generate preliminary assessment...")
         assessment_result = checker.generate_preliminary_assessment()
-        print("\n💡 HealHub Preliminary Assessment:")
+        print("\n💡 HealBee Preliminary Assessment:")
         print("--------------------------------------------------")
         print(json.dumps(assessment_result, indent=2))
         print("--------------------------------------------------")
@@ -409,7 +413,7 @@ if __name__ == '__main__':
              checker_no_follow_up.collected_symptom_details['headache'] = {} # Mark as processed, no answers
 
         assessment_no_follow_up = checker_no_follow_up.generate_preliminary_assessment()
-        print("\n💡 HealHub Preliminary Assessment (No Follow-up Answers):")
+        print("\n💡 HealBee Preliminary Assessment (No Follow-up Answers):")
         print("--------------------------------------------------")
         print(json.dumps(assessment_no_follow_up, indent=2))
         print("--------------------------------------------------")

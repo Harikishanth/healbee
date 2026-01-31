@@ -18,6 +18,7 @@ Key challenges in the Indian healthcare landscape include a skewed doctor-patien
 - AI-driven responses for general healthcare questions via prompt-engineered Sarvam-M.
 - Safety guardrails with disclaimers and emergency redirection.
 - Interactive Symptom Checker with Preliminary Triage Advice.
+- **Supabase** for optional login and persistent memory (chats, health context). Firebase has been intentionally removed; the app runs without any Firebase or `.streamlit/secrets.toml` locally.
 
 ## Technologies Used
 - **Sarvam AI Platform**: Utilized for its comprehensive suite of AI services for Indian languages, including:
@@ -111,7 +112,8 @@ The application includes an interactive symptom checker to help users understand
     - `test_nlu_hinglish.py`: Tests Hinglish input parsing and understanding.
     - `test_evaluation.py`: Evaluates overall system outputs vs expected responses.
     - `evaluation_results_metrics.json`: JSON log of evaluation metrics and results
-- `.env`: Stores API keys and other environment variables (not tracked by Git).
+- `.env`: Stores API keys and other environment variables (not tracked by Git). Copy from `.env.example` and fill in your values.
+- `.env.example`: Template listing required and optional env vars (no secrets; safe to commit).
 - `requirements.txt`: Lists project dependencies.
 - `README.md`: This file.
 
@@ -120,7 +122,7 @@ The application includes an interactive symptom checker to help users understand
 ### Prerequisites
 *   Ensure Python 3.10+ is installed.
 *   Clone the repository: `git clone <repository-url>`
-*   Navigate to the project directory: `cd <repository-name>`
+*   Navigate to the project directory: `cd healbee_project` (or whatever you named the repo folder)
 *   Create a Python virtual environment (recommended):
     ```bash
     python -m venv venv
@@ -130,17 +132,17 @@ The application includes an interactive symptom checker to help users understand
     ```bash
     pip install -r requirements.txt
     ```
-*   Create a `.env` file in the project root. You can copy from `.env.example` if provided, or create it manually. Add your Sarvam API key:
+*   Create a `.env` file in the project root: copy `.env.example` to `.env`, then set your Sarvam API key (and optionally Supabase URL/key for login). Example:
     ```env
     SARVAM_API_KEY="your_actual_api_key_here"
     ```
-    *(Obtainable from the Sarvam AI dashboard).*
-
- *  Create a `.streamlit/secrets.toml` file in the project root by copying the contents of your Firebase service account JSON (downloaded from the [Firebase Console](https://console.firebase.google.com/)) under a `[FIREBASE]` section.
+    *(Sarvam key obtainable from the [Sarvam AI dashboard](https://dashboard.sarvam.ai).)*  
+    **No `.streamlit/secrets.toml` is required for local run.** For deployment on Streamlit Cloud, add the same keys in the app’s **Settings → Secrets**.
 
 ### Running the Application (Streamlit UI)
-The primary way to interact with the application is through the Streamlit UI.
+The primary way to interact with the application is through the Streamlit UI. From the folder that contains the project (e.g. `HealBee`), run:
 ```bash
+cd healbee_project
 streamlit run src/ui.py
 ```
 Open your browser and go to `http://localhost:8501` (or the URL provided by Streamlit).
@@ -156,7 +158,24 @@ python main.py
 *   **Microphone Permissions**: Users will need to grant microphone permissions to their browser for the voice input feature to work.
 *   **HTTPS Required**: For browsers to allow microphone access, the application must be served over HTTPS. Streamlit Community Cloud provides this by default. If you are self-hosting in a way that results in an HTTP URL, voice input might not work on many browsers. Localhost is often an exception.
 
-## HealHub – Demo
+### Optional: Auth & Persistent Memory (Supabase)
+
+HealBee uses **Supabase** as the only backend for auth and persistence (Firebase has been removed).
+
+To enable login, multiple chats, and health context across sessions:
+
+1. Create a [Supabase](https://supabase.com) project and get **Project URL** and **anon public** key.
+2. Add to `.env` (local) or to **Streamlit Cloud → Settings → Secrets** (deployment):
+   ```env
+   SUPABASE_URL="https://your-project.supabase.co"
+   SUPABASE_ANON_KEY="your_anon_key"
+   ```
+3. In the Supabase SQL Editor, run the schema in `supabase_schema.sql` (creates `chats`, `messages`, `user_memory` tables and RLS).
+4. Restart the app; you will see Login/Register. Without these vars, the app runs in **session-only mode** (no login, no persistence).
+
+**Why Supabase over Firebase:** HealBee uses Supabase for auth and persistent memory to keep a single, simple backend (PostgreSQL + Row Level Security), avoid vendor lock-in to Google, and align with Streamlit-friendly deployment. Feedback buttons still appear; feedback is acknowledged in the UI but not persisted to any external service.
+
+## HealBee – Demo
 
 ### Quick Preview (GIF)
 
@@ -164,6 +183,15 @@ python main.py
 
 > Quick visual demo of the app (silent preview).
 
+
+### Deploying on Streamlit Cloud
+
+1. Push your repo to GitHub and connect it to [Streamlit Community Cloud](https://share.streamlit.io/).
+2. In the app **Settings → Secrets**, add:
+   - `SARVAM_API_KEY` (required)
+   - `SUPABASE_URL` and `SUPABASE_ANON_KEY` (optional; omit for session-only mode).
+3. No `.streamlit/secrets.toml` file is required; secrets are set in the Cloud dashboard.
+4. Run command: `streamlit run src/ui.py`.
 
 ### Try It Live on Streamlit
 
@@ -183,7 +211,42 @@ While this application aims to provide useful healthcare information, it has sev
 *   **Knowledge Base Scope**: The effectiveness of responses for general queries depends on the LLM's training data, as RAG from an external medical KB is not used for these. The Symptom Checker relies on `symptom_knowledge_base.json`, which currently covers a limited set of common symptoms.
 *   **LLM Hallucinations/Errors**: While prompt engineering aims to guide the LLM, there's always a possibility of generating incorrect or irrelevant information, especially for queries not covered by the symptom checker's specific logic. Safety layers and disclaimers are crucial.
 *   **Complex Symptom Combinations**: The current Symptom Checker logic and LLM prompting for assessment are designed for common symptom presentations. Highly complex, rare, or subtly combined symptoms might not be interpreted adequately.
-*   **No User Memory**: The system currently does not maintain user history or context across different sessions.
+*   **User Memory (optional)**: With Supabase configured (Phase C), the app can save chats and health context across sessions; without it, context is session-only.
+
+## For PPT / Jury: Original Limitations, What We Keep, What We Break & Responsible AI
+
+### Original HealHub limitations (baseline)
+
+*   **Stateless**: No user memory; every session started fresh.
+*   **No personalization**: No profile (age, conditions, location); same advice for everyone.
+*   **Limited symptom coverage**: Symptom checker focused on a small set of common symptoms.
+*   **Not a diagnostic tool**: Guidance only; disclaimers and safety guardrails in place.
+*   **STT/NLU dependent**: Quality depends on Sarvam STT/NLU accuracy.
+
+### What we intentionally keep (ethics & safety)
+
+*   **No diagnosis**: The app never diagnoses; it only provides general guidance, triage points, and “see a doctor” when needed.
+*   **Disclaimers**: Every assessment and health response includes a clear “not a diagnosis” disclaimer.
+*   **Safety guardrails**: Emergency detection, diagnosis-request handling, and medication-advice boundaries are unchanged.
+*   **No replacement for a doctor**: Messaging and prompts reinforce that the app is a companion, not a substitute for qualified care.
+
+### What we “break” (improvements)
+
+*   **Memory**: Session memory (conversation, symptoms, last advice) and optional persistent memory (Supabase: chats, messages, user_memory) so the assistant can say things like “Last time you mentioned stomach pain…”
+*   **Personalization**: Optional user profile (name, age, gender, height, weight, location, conditions, allergies, language) used only for tone and follow-up relevance, never for diagnosis.
+*   **Coverage**: Symptom knowledge base expanded with structured support for digestive issues, fever/infections, women’s health (e.g. menstrual pain), child health (e.g. child fever), nutrition & anemia (weakness), chronic conditions (high blood sugar, high blood pressure), and seasonal (e.g. heat stroke, dengue-related triage).
+
+### Why this is responsible AI
+
+*   **Safety first**: We keep all ethical guardrails; we do not add diagnosis or replace clinical judgment.
+*   **Transparency**: Users see disclaimers; profile and memory are used only for continuity and relevance, not for medical conclusions.
+*   **Inclusive design**: Rural-friendly UI (larger text and buttons), multilingual support, and low-friction access (session-only mode works without login).
+*   **SDG 3 aligned**: Improves health information access and literacy in a bounded, non-diagnostic way.
+
+### Implementation choices (optional note for jury)
+
+*   **Auth**: We use Supabase email/password (not email+OTP or anonymous) for stability and simplicity; the app runs without auth in session-only mode. OTP or anonymous IDs can be added later if needed.
+*   **Directions**: We use OpenStreetMap (Nominatim) for “Find nearby hospitals/clinics” and directions links to avoid paid APIs (e.g. Google Maps); functionality is the same for the user.
 
 ## Future Work
 
